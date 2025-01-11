@@ -350,6 +350,9 @@ ls
 cd /../..
 get <filename>
 put <filename>
+
+#if on different port
+ftp -p <Target_IP> <Port>
 ```
 
 #### Hydra
