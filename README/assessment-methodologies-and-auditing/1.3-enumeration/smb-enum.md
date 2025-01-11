@@ -1660,5 +1660,9 @@ while read -r SHARE; do
 done < "$WORDLIST"
 
 ```
+vim
+ESC :sav shares.sh
+ESC :wq
 save the file shares.sh 
 change permission: chmod +x shares.sh
+run: ./shares.sh
