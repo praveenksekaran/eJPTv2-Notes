@@ -58,6 +58,48 @@ curl -I http://<TARGET_IP>/<DIR>
 curl --digest -u <USER>:<PW> http://<TARGET_IP>/<DIR>
 
 lynx <TARGET_IP>
+
+# CURL
+curl -I <TARGET_IP>
+curl -X GET <TARGET_IP>
+curl -X OPTIONS <TARGET_IP> -v
+curl -X POST <TARGET_IP>
+curl -X POST <TARGET_IP>/login.php -d "name=john&password=password" -v
+curl -X PUT <TARGET_IP>
+
+curl <TARGET_IP>/uploads/ --upload-file hello.txt
+curl -X DELETE <TARGET_IP>/uploads/hello.txt -v
+
+# Gobuster
+gobuster dir -u http://<TARGET_IP> -w /usr/share/wordlists/dirb/common.txt -b 403,404
+
+gobuster dir -u http://<TARGET_IP> -w /usr/share/wordlists/dirb/common.txt -b 403,404 -x .php,.xml,.txt -r
+
+gobuster dir -u http://<TARGET_IP>/data -w /usr/share/wordlists/dirb/common.txt -b 403,404 -x .php,.xml,.txt -r
+
+# Ffuf
+## Directory discovery:
+ffuf -w wordlist.txt -u http://example.com/FUZZ
+## File discovery:
+ffuf -w wordlist.txt -u http://example.com/FUZZ -e .aspx,.php,.txt,.html
+## Output of responses with status code:
+ffuf -w /usr/share/wordlists/dirb/small.txt -u http://example.com/FUZZ -mc 200,301
+## The -maxtime flag offers to end the ongoing fuzzing after the specified time in seconds:
+ffuf -w wordlist.txt -u http://example.com/FUZZ -maxtime 60
+## Number of threads:
+ffuf -w wordlist.txt -u http://example.com/FUZZ -t 64
+
+# Nikto
+nikto -h http://<TARGET_IP> -o niktoscan.txt
+
+nikto -h http://<TARGET_IP>/index.php?page=arbitrary-file-inclusion.php -Tuning 5 -o nikto.html -Format htm
+
+#WPScan
+wpscan --url http://<TARGET_IP>--enumerate u
+wpscan --url http://<TARGET_IP> -e vp --plugins-detection mixed --api-token API_TOKEN
+wpscan --url http://<TARGET_IP> -e u --passwords /usr/share/wordlists/rockyou.txt
+wpscan --url http://<TARGET_IP> -U admin -P /usr/share/wordlists/rockyou.txt
+
 ```
 #### Metasploit
 ```bash
