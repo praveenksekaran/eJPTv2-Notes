@@ -124,9 +124,11 @@ fierce --domain <HOST>
 
 ```bash
 ## Ping scan
-sudo nmap -sn <TARGET_IP/NETWORK>
+sudo nmap -sn <HOST_IP/NETWORK>
+nmap -sn <HOST_IP>/<SUB> > hosts.txt
+nmap -sn -T4 <HOST_IP>/<SUB> -oG - | awk '/Up$/{print $2}'
 ## ARP scan
-netdiscover -i eth1 -r <TARGET_IP/NETWORK>
+netdiscover -i eth1 -r <HOST_IP/NETWORK>
 
 # NMAP PORT SCAN
 nmap <TARGET_IP>
@@ -167,6 +169,9 @@ nmap -Pn -F -oX outputfile.xml <TARGET_IP>
 nmap -Pn -sV -sC -O -oA outputfile <TARGET_IP>
 nmap -Pn -sV -sC -O -oA outputfile <TARGET_IP>
 nmap -A -oA outputfile <TARGET_IP>
+
+## Metasploit
+auxiliary/scanner/portscan/tcp
 ```
 
 ## Footprinting & Scanning
