@@ -471,6 +471,17 @@ Get-ChildItem -Path C:\ -Filter flag*.txt -Recurse -Force
 
 ```
 
+# Linux Priv Escalation
+
+* Option 1: Find a executable with Sudo permission and then execute a terminat inline
+  Lab 2: https://blog.syselement.com/ine/courses/ejpt/hostnetwork-penetration-testing/5-post-exploit/linux-privesc
+
+* Find a file with root privilages and inside insert your script
+  Lab1: https://blog.syselement.com/ine/courses/ejpt/hostnetwork-penetration-testing/5-post-exploit/linux-privesc
+
+* Find a file or schedule which will show additonal vulnerabilities
+  Lab2:https://blog.syselement.com/ine/courses/ejpt/hostnetwork-penetration-testing/3-metasploit/linux-post-msf
+
 
 
 
